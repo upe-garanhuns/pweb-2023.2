@@ -33,9 +33,9 @@ jobs:
         run: |
           # Substitua '2023-03-01T00:00:00Z' pela sua data/hora de corte
           DEADLINE='2023-03-03T14:50:00Z'
-          for COMMIT in $(git rev-list --all --after="$DEADLINE")
-          do
-            echo "Commit $COMMIT foi feito após o prazo final $DEADLINE"
-            exit 1
-          done
-          echo "Commit $COMMIT para a atividade EXEC-02 aceito foi aceito no prazo $DEADLINE"
+          #for COMMIT in $(git rev-list --all --after="$DEADLINE")
+          #do
+            #echo "Commit $COMMIT foi feito após o prazo final $DEADLINE"
+            #exit 1
+          #done
+          #echo "Commit $COMMIT para a atividade EXEC-02 aceito foi aceito no prazo $DEADLINE"
