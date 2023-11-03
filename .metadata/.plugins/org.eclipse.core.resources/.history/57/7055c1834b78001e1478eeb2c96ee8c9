@@ -1,0 +1,44 @@
+package br.upe.garanhus.esw.pweb.controle;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import br.upe.garanhus.esw.pweb.AplicacaoException;
+import br.upe.garanhus.esw.pweb.modelo.servicos.ConsomeAPI;
+import br.upe.garanhus.esw.pweb.modelo.servicos.Imagem;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/processa-imagem")
+public class Exec02Servlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+	
+	private ConsomeAPI consome = new ConsomeAPI();
+	private AplicacaoException appEx = new AplicacaoException();
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+		try {
+			String imagens = consome.coletaListaJSON();
+			resp.getWriter().write(imagens);
+		} catch (IOException | URISyntaxException | InterruptedException e) {
+			appEx.capturaExcecao(e, resp);
+		}
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+		try {
+			String imagem = consome.coletaImagemJSON("0XYvRd7oD");
+			resp.getWriter().write(imagem);
+		} catch (IOException | URISyntaxException | InterruptedException e) {
+			appEx.capturaExcecao(e, resp);
+		}
+	}
+}

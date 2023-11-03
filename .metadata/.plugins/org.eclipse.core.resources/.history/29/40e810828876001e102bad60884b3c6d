@@ -1,0 +1,30 @@
+package br.upe.garanhus.esw.pweb;
+
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import jakarta.servlet.ServletException;
+
+public class ExceptionHandler {
+	private static final String servletExceptionMessage = "Erro na execução do servlet.";
+	private static final String iOExceptionMessage = "Erro de entrada/saída.";
+	private static final String interruptedExceptionMessage = "Thread interrompida.";
+	private static final String illegalArgumentExceptionMessage = "Argumento inválido.";
+	private static final String securityExceptionMessage = "Erro de segurança.";
+
+	private static final Logger logger = Logger.getLogger(ExceptionHandler.class.getName());
+
+	public void handleException(Exception e) {
+		if (e instanceof ServletException) {
+			logger.severe(servletExceptionMessage);
+		} else if (e instanceof IOException) {
+			logger.severe(iOExceptionMessage);
+		} else if (e instanceof InterruptedException) {
+			logger.severe(interruptedExceptionMessage);
+		} else if (e instanceof IllegalArgumentException) {
+			logger.severe(illegalArgumentExceptionMessage);
+		} else if (e instanceof SecurityException) {
+			logger.severe(securityExceptionMessage);
+		}
+	}
+}

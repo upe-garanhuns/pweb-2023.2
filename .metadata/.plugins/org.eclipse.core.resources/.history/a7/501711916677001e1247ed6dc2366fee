@@ -1,0 +1,25 @@
+package br.upe.garanhus.esw.pweb.controle;
+
+import br.upe.garanhus.esw.pweb.modelo.servicos.ConsomeAPI;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/processa-imagem")
+public class Exec02Servlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+	
+	private ConsomeAPI consome = new ConsomeAPI();
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+		consome.coletaListaJSON(resp);
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+		consome.coletaImagemJSON("0XYvRd7oD", resp);
+	}
+}

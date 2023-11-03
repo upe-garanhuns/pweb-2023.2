@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.m2e.Maven2LaunchConfigurationType">
+    <booleanAttribute key="M2_BATCH" value="false"/>
+    <stringAttribute key="M2_GOALS" value="-U archetype:generate"/>
+    <listAttribute key="M2_PROPERTIES">
+        <listEntry value="archetypeGroupId=org.apache.maven.archetypes"/>
+        <listEntry value="archetypeArtifactId=maven-archetype-webapp"/>
+        <listEntry value="archetypeVersion=1.4"/>
+        <listEntry value="groupId=br.upe.garanhus.esw.pweb"/>
+        <listEntry value="artifactId=atividade-exec02"/>
+        <listEntry value="version=0.0.1-SNAPSHOT"/>
+        <listEntry value="package=war"/>
+        <listEntry value="outputDirectory=C:\Users\LENOVO\Documents\GitHub\EXEC-02-WEB"/>
+    </listAttribute>
+    <booleanAttribute key="M2_SAVE_BEFORE_LAUNCH" value="false"/>
+    <booleanAttribute key="org.eclipse.debug.ui.private" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="C:\Users\LENOVO\AppData\Local\Temp\m2e-archetypeGenerator5023637509290688374"/>
+</launchConfiguration>

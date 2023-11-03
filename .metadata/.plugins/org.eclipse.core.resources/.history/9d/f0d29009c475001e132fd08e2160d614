@@ -1,0 +1,42 @@
+package br.upe.garanhus.esw.pweb.controle;
+
+import java.io.IOException;
+import java.util.List;
+
+import br.upe.garanhus.esw.pweb.modelo.servicos.ConsomeAPI;
+import br.upe.garanhus.esw.pweb.modelo.servicos.Imagem;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/processa-imagem")
+public class Exec02Servlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+	
+	private ConsomeAPI consome = new ConsomeAPI();
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().write(consome.coletaListaJSON());
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Imagem imagem = consome.coletaImagemJSON("0XYvRd7oD");
+		
+        // Configura o tipo de conteúdo da resposta como JSON
+        resp.setContentType("application/json");
+
+        // Usa o JSON-B para converter a lista de imagens em JSON
+        Jsonb jsonb = JsonbBuilder.create();
+        String json = jsonb.toJson(imagem);
+
+        // Escreve o JSON na resposta
+        resp.getWriter().write(json);
+	}
+}

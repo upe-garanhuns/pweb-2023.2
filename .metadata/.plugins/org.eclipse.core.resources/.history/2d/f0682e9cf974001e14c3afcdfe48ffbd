@@ -1,0 +1,13 @@
+package br.upe.garanhus.esw.pweb.modelo;
+
+public class Imagem {
+
+	String id;
+	String url;
+	String width;
+	String height;
+	
+	public Imagem() {
+		
+	}
+}

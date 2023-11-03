@@ -1,0 +1,24 @@
+package br.upe.garanhus.esw.pweb;
+
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import jakarta.servlet.ServletException;
+
+public class ExceptionHandler {
+	private static final Logger logger = Logger.getLogger(ExceptionHandler.class.getName());
+
+	public void handleException(Exception e) {
+		if (e instanceof ServletException) {
+			logger.severe("{}");
+		} else if (e instanceof IOException) {
+			logger.severe("");
+		} else if (e instanceof InterruptedException) {
+			logger.severe("");
+		} else if (e instanceof IllegalArgumentException) {
+			logger.severe("");
+		} else if (e instanceof SecurityException) {
+			logger.severe("");
+		}
+	}
+}

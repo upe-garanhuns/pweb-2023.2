@@ -1,0 +1,41 @@
+package br.upe.garanhus.esw.pweb.modelo.servicos;
+
+import jakarta.json.bind.annotation.JsonbProperty;
+
+public class Imagem {
+
+    @JsonbProperty("id")
+    String id;
+    @JsonbProperty("url")
+    String url;
+    @JsonbProperty("width")
+    String width;
+    @JsonbProperty("height")
+    String height;
+    
+    public Imagem() {
+    }
+	
+	public String getId() {
+		return id;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+	
+	public String getWidth() {
+		return width;
+	}
+	
+	public String getHeight() {
+		return height;
+	}
+
+	@Override
+	public String toString() {
+		return "Imagem [id=" + id + ", url=" + url + ", width=" + width + ", height=" + height + "]";
+	}
+	
+	
+}

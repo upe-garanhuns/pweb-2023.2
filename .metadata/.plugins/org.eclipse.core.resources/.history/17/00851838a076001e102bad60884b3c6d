@@ -1,0 +1,42 @@
+package br.upe.garanhus.esw.pweb;
+
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class AplicacaoException {
+	private static final String SERVLET_EXCEPTION_MESSAGE = "Erro na execução do servlet.";
+	private static final String IO_EXCEPTION_MESSAGE = "Erro de entrada/saída.";
+	private static final String INTERRUPTED_EXCEPTION_MESSAGE = "Erro de Thread interrompida.";
+	private static final String ILLEGAL_ARGUMENT_EXCEPTION_MESSAGE = "Erro de Argumento inválido.";
+	private static final String SECURITY_EXCEPTION_MESSAGE = "Erro de segurança.";
+
+	private static final Logger logger = Logger.getLogger(AplicacaoException.class.getName());
+
+	public void capturaExcecao(Exception e, HttpServletResponse resp) {
+		if (e instanceof ServletException) {
+			trataExcecao(resp, SERVLET_EXCEPTION_MESSAGE, e.getMessage());
+		} else if (e instanceof IOException) {
+			trataExcecao(resp, IO_EXCEPTION_MESSAGE, e.getMessage());
+		} else if (e instanceof InterruptedException) {
+			trataExcecao(resp, INTERRUPTED_EXCEPTION_MESSAGE, e.getMessage());
+		} else if (e instanceof IllegalArgumentException) {
+			trataExcecao(resp, ILLEGAL_ARGUMENT_EXCEPTION_MESSAGE, e.getMessage());
+		} else if (e instanceof SecurityException) {
+			trataExcecao(resp, SECURITY_EXCEPTION_MESSAGE, e.getMessage());
+		}
+	}
+	
+	
+	public void trataExcecao(HttpServletResponse resp, String mensagem, String detalhe) {
+		resp.setContentType("application/json");
+		String jsonErroMsg = "{\"codigo\": " + resp.getStatus() + ", \"mensagem\": \"" + mensagem + "\", \"detalhe\": \"" + detalhe + "\"}";
+		try {
+            resp.getWriter().write(jsonErroMsg);
+        } catch (IOException ex) {
+            logger.severe("Erro de escrita de resposta: " + ex.getMessage());
+        }
+	}
+}
