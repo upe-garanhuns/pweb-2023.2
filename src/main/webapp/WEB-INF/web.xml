@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" version="6.0">
+  <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+    <description></description>
+    <display-name>Exec02Servlet</display-name>
+    <servlet-name>Exec02Servlet</servlet-name>
+    <servlet-class>br.upe.garanhus.esw.pweb.controle.Exec02Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Exec02Servlet</servlet-name>
+    <url-pattern>/Exec02Servlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Teste</display-name>
+    <servlet-name>Teste</servlet-name>
+    <servlet-class>br.upe.garanhus.esw.pweb.controle.Teste</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Teste</servlet-name>
+    <url-pattern>/Teste</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Teste02Servlet</display-name>
+    <servlet-name>Teste02Servlet</servlet-name>
+    <servlet-class>br.upe.garanhus.esw.pweb.controle.Teste02Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Teste02Servlet</servlet-name>
+    <url-pattern>/Teste02Servlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ServletTeste</display-name>
+    <servlet-name>ServletTeste</servlet-name>
+    <servlet-class>br.upe.garanhus.esw.pweb.controle.ServletTeste</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ServletTeste</servlet-name>
+    <url-pattern>/ServletTeste</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Servlet</display-name>
+    <servlet-name>Servlet</servlet-name>
+    <servlet-class>br.upe.garanhus.esw.pweb.controle.Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Servlet</servlet-name>
+    <url-pattern>/Servlet</url-pattern>
+  </servlet-mapping>
+</web-app>
