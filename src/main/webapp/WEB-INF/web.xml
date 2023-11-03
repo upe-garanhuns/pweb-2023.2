@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:web="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+    <description></description>
+    <display-name>Exec02Servlet</display-name>
+    <servlet-name>Exec02Servlet</servlet-name>
+    <servlet-class>br.upe.garanhus.esw.pweb.controle.Exec02Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Exec02Servlet</servlet-name>
+    <url-pattern>/Exec02Servlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>ErrorHandlerServlet</display-name>
+    <servlet-name>ErrorHandlerServlet</servlet-name>
+    <servlet-class>br.upe.garanhus.esw.pweb.controle.ErrorHandlerServlet</servlet-class>
+  </servlet>
+  
+  <error-page>
+    <exception-type>br.upe.garanhus.esw.pweb.modelo.AplicacaoException</exception-type>
+    <location>/errorHandler</location>
+  </error-page>
+
+</web-app>
