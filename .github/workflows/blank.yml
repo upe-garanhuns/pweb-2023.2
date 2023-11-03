@@ -33,7 +33,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           DEADLINE='2023-11-03T14:50:00Z'
-          for COMMIT in $(git-rev-list --all --after="$DEADLINE")
+          for COMMIT in $(git -rev-list --all --after="$DEADLINE")
           do
           echo "Commit $COMMIT foi feito após o prazo final de entrega da atividade EXEC-02"
           exit 1
