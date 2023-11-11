@@ -10,6 +10,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import br.upe.garanhus.esw.pweb.repositorio.ConexaoBD;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,9 +31,11 @@ public final class RickMortyService {
   private static final String MSG_ERRO_INESPERADO = "Não foi possível obter os dados da API Web: Rick and Morty";
 
   private final HttpClient cliente;
+  private final ConexaoBD conexao;
 
   public RickMortyService() {
     this.cliente = HttpClient.newBuilder().proxy(ProxySelector.getDefault()).build();
+    this.conexao = new ConexaoBD();
   }
 
   public List<PersonagemTO> listar() {
@@ -51,6 +54,8 @@ public final class RickMortyService {
 
       RespostaListaPersonagensTO respostaAPI = jsonb.fromJson(response.body(), RespostaListaPersonagensTO.class);
       personagens = respostaAPI.getPersonagens();
+      
+      salvarPersonagens(personagens);
 
     } catch (Exception e) {
       this.tratarErros(e);
@@ -108,5 +113,18 @@ public final class RickMortyService {
   private void tratarErroRetornoAPI(int statusCode) {
     logger.log(Level.SEVERE, MSG_ERRO_INESPERADO + "Status Code" + statusCode);
     throw new RickMortyException(MSG_ERRO_INESPERADO);
+  }
+  
+  private void salvarPersonagens(List<PersonagemTO> personagens) {
+    personagens.forEach(personagem -> {
+      
+      String query = "INSERT INTO personagens VALUES (" +personagem.getId() + ","
+          + "'" + personagem.getNome() + "'," + "'" + personagem.getStatus() + "',"
+          + "'" + personagem.getEspecie() + "'," + "'" + personagem.getGenero()
+              + "'," + "'" + personagem.getImagem() + "'," + "'" + personagem.getCriacao() + "')";
+      
+      conexao.inserir(query);
+
+    });
   }
 }

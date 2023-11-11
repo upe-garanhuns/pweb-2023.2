@@ -38,7 +38,7 @@ public class Exec02Servlet extends HttpServlet {
       List<PersonagemTO> personagens = rickMortyService.listar();
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagens));
       
-    } catch (RuntimeException e) {
+    } catch (Exception e) {
       this.tratarErros(e, response);
     }
   }
@@ -52,7 +52,7 @@ public class Exec02Servlet extends HttpServlet {
       final PersonagemTO personagem = rickMortyService.recuperar(id);
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagem));
 
-    } catch (RuntimeException e) {
+    } catch (Exception e) {
       this.tratarErros(e, response);
     }
   }
