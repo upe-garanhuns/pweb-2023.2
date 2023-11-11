@@ -10,7 +10,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import br.upe.garanhus.esw.pweb.repositorio.ConexaoBD;
+import br.upe.garanhus.esw.pweb.repositorio.PersonagemRepositorio;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,11 +31,11 @@ public final class RickMortyService {
   private static final String MSG_ERRO_INESPERADO = "Não foi possível obter os dados da API Web: Rick and Morty";
 
   private final HttpClient cliente;
-  private final ConexaoBD conexao;
+  private final PersonagemRepositorio personagemRepo;
 
   public RickMortyService() {
     this.cliente = HttpClient.newBuilder().proxy(ProxySelector.getDefault()).build();
-    this.conexao = new ConexaoBD();
+    this.personagemRepo = new PersonagemRepositorio();
   }
 
   public List<PersonagemTO> listar() {
@@ -43,7 +43,7 @@ public final class RickMortyService {
     HttpResponse<String> response = null;
 
     try {
-      final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character")).GET().build();
+      final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character/?page=15")).GET().build();
       response = this.cliente.send(request, BodyHandlers.ofString());
 
       if (HttpServletResponse.SC_OK != response.statusCode()) {
@@ -118,12 +118,13 @@ public final class RickMortyService {
   private void salvarPersonagens(List<PersonagemTO> personagens) {
     personagens.forEach(personagem -> {
       
-      String query = "INSERT INTO personagens VALUES (" +personagem.getId() + ","
-          + "'" + personagem.getNome() + "'," + "'" + personagem.getStatus() + "',"
-          + "'" + personagem.getEspecie() + "'," + "'" + personagem.getGenero()
-              + "'," + "'" + personagem.getImagem() + "'," + "'" + personagem.getCriacao() + "')";
+      String query1 = "SELECT * FROM personagens WHERE id = " + personagem.getId();
       
-      conexao.inserir(query);
+      if(personagemRepo.procurar(query1)) {
+        personagemRepo.atualizarPersonagem(personagem);
+      } else {
+        personagemRepo.inserirPersonagem(personagem);
+      }
 
     });
   }
