@@ -1,0 +1,7 @@
+package br.upe.garanhus.esw.pweb.modelo.servicos;
+
+import jakarta.json.bind.annotation.JsonbProperty;
+
+public class Imagem {
+
+}

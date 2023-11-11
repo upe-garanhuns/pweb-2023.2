@@ -1,0 +1,13 @@
+
+ñ
+java:S1488)"cImmediately return this expression instead of assigning it to the temporary variable "imagensJson".(ÕÚ©ˆ8ÁΩà¡∏1H∆RMINORZ
+CODE_SMELL
+ï
+java:S1488?"bImmediately return this expression instead of assigning it to the temporary variable "imagemJson".(»±ñÃ8ÁΩà¡∏1H…RMINORZ
+CODE_SMELL
+i
+java:S2629 "7Use the built-in formatting to construct this argument.(Ÿ√ˆX8≠∞…Â∑1HÃRMAJORZ
+CODE_SMELL
+i
+java:S26297"7Use the built-in formatting to construct this argument.(Ÿ√ˆX8≠∞…Â∑1HÕRMAJORZ
+CODE_SMELL

@@ -1,0 +1,67 @@
+package br.upe.garanhus.esw.pweb;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.logging.Logger;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class AplicacaoException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
+	
+	private int codigo;
+	private String mensagem;
+	private String detalhe;
+	
+	private static final String SERVLET_EXCEPTION_MESSAGE = "Erro na execução do servlet.";
+	private static final String IO_EXCEPTION_MESSAGE = "Erro de entrada/saída.";
+	private static final String INTERRUPTED_EXCEPTION_MESSAGE = "Erro de Thread interrompida.";
+	private static final String ILLEGAL_ARGUMENT_EXCEPTION_MESSAGE = "Erro de Argumento inválido.";
+	private static final String SECURITY_EXCEPTION_MESSAGE = "Erro de segurança.";
+	private static final String URI_SYNTAX_MESSAGE = "Erro ao analisar o Identificador de Recurso Uniforme (URI)";
+
+	private static final Logger logger = Logger.getLogger(AplicacaoException.class.getName());
+
+	public void capturaExcecao(Exception e, HttpServletResponse resp) {
+		codigo = resp.getStatus();
+		detalhe = e.getMessage();
+		
+		if (e instanceof ServletException) {
+			codigo = resp.getStatus();
+			mensagem = SERVLET_EXCEPTION_MESSAGE;
+			detalhe = e.getMessage();
+		} else if (e instanceof IOException) {
+			codigo = resp.getStatus();
+			mensagem = IO_EXCEPTION_MESSAGE;
+			detalhe = e.getMessage();
+		} else if (e instanceof InterruptedException) {
+			codigo = resp.getStatus();
+			mensagem = INTERRUPTED_EXCEPTION_MESSAGE;
+			detalhe = e.getMessage();
+		} else if (e instanceof IllegalArgumentException) {
+			codigo = resp.getStatus();
+			mensagem = ILLEGAL_ARGUMENT_EXCEPTION_MESSAGE;
+			detalhe = e.getMessage();
+		} else if (e instanceof SecurityException) {
+			codigo = resp.getStatus();
+			mensagem = SECURITY_EXCEPTION_MESSAGE;
+			detalhe = e.getMessage();
+		} else if (e instanceof URISyntaxException) {
+			codigo = resp.getStatus();
+			mensagem = URI_SYNTAX_MESSAGE;
+			detalhe = e.getMessage();
+		}
+		String jsonErroMsg = "{\"codigo\": " + codigo + ", \"mensagem\": \"" + mensagem + "\", \"detalhe\": \"" + detalhe + "\"}";
+	}
+	
+	
+	public void trataExcecao(HttpServletResponse resp, String mensagem, String detalhe) {
+		String jsonErroMsg = "{\"codigo\": " + resp.getStatus() + ", \"mensagem\": \"" + mensagem + "\", \"detalhe\": \"" + detalhe + "\"}";
+		try {
+            resp.getWriter().write(jsonErroMsg);
+        } catch (IOException e) {
+            logger.severe("Erro de escrita de resposta: " + e.getMessage());
+        }
+	}
+}

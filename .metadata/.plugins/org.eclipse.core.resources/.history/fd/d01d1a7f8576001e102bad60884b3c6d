@@ -1,0 +1,22 @@
+package br.upe.garanhus.esw.pweb;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+
+public class ExceptionHandler {
+
+	public void handleException(Exception e) {
+		if (e instanceof ServletException) {
+			System.out.println();
+		} else if (e instanceof IOException) {
+			System.out.println();
+		} else if (e instanceof InterruptedException) {
+			System.out.println();
+		} else if (e instanceof IllegalArgumentException) {
+			System.out.println();
+		} else if (e instanceof SecurityException) {
+			System.out.println();
+		}
+	}
+}

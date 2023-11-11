@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="jakarta.servlet.annotation.WebServlet"/>
+    <fullyQualifiedTypeName name="br.upe.garanhus.esw.pweb.modelo.servicos.ConsomeAPI"/>
+    <fullyQualifiedTypeName name="java.lang.Throwable"/>
+    <fullyQualifiedTypeName name="java.net.http.HttpClient"/>
+    <fullyQualifiedTypeName name="java.net.URI"/>
+    <fullyQualifiedTypeName name="java.net.http.HttpRequest"/>
+    <fullyQualifiedTypeName name="java.net.http.HttpResponse"/>
+    <fullyQualifiedTypeName name="java.net.http.HttpResponse.BodyHandler"/>
+    <fullyQualifiedTypeName name="java.net.http.HttpResponse.BodyHandlers"/>
+    <fullyQualifiedTypeName name="java.lang.Error"/>
+    <fullyQualifiedTypeName name="java.util.Collections"/>
+    <fullyQualifiedTypeName name="java.awt.Window.Type"/>
+    <fullyQualifiedTypeName name="java.lang.reflect.Type"/>
+    <fullyQualifiedTypeName name="jakarta.json.bind.annotation.JsonbProperty"/>
+    <fullyQualifiedTypeName name="br.upe.garanhus.esw.pweb.modelo.Imagem"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="com.google.gson.Gson"/>
+    <fullyQualifiedTypeName name="java.util.Arrays"/>
+    <fullyQualifiedTypeName name="jakarta.servlet.http.HttpServlet"/>
+    <fullyQualifiedTypeName name="jakarta.servlet.ServletException"/>
+    <fullyQualifiedTypeName name="java.lang.IllegalArgumentException"/>
+    <fullyQualifiedTypeName name="java.lang.System.Logger"/>
+    <fullyQualifiedTypeName name="java.util.logging.Logger"/>
+    <fullyQualifiedTypeName name="java.lang.Exception"/>
+    <fullyQualifiedTypeName name="br.upe.garanhus.esw.pweb.ExceptionHandler"/>
+    <fullyQualifiedTypeName name="jakarta.servlet.http.HttpServletResponse"/>
+    <fullyQualifiedTypeName name="java.io.IOException"/>
+    <fullyQualifiedTypeName name="jakarta.json.bind.JsonbConfig"/>
+    <fullyQualifiedTypeName name="java.lang.RuntimeException"/>
+    <fullyQualifiedTypeName name="jakarta.json.bind.Jsonb"/>
+    <fullyQualifiedTypeName name="br.upe.garanhus.esw.pweb.modelo.servicos.Imagem"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="jakarta.json.bind.JsonbBuilder"/>
+    <fullyQualifiedTypeName name="br.upe.garanhus.esw.pweb.AplicacaoException"/>
+    <fullyQualifiedTypeName name="java.net.URISyntaxException"/>
+</qualifiedTypeNameHistroy>

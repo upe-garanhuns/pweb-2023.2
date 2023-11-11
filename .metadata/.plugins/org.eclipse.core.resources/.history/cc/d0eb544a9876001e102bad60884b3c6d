@@ -1,0 +1,40 @@
+package br.upe.garanhus.esw.pweb.controle;
+
+import java.io.IOException;
+
+import br.upe.garanhus.esw.pweb.AplicacaoException;
+import br.upe.garanhus.esw.pweb.modelo.servicos.ConsomeAPI;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/processa-imagem")
+public class Exec02Servlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+	
+	private ConsomeAPI consome = new ConsomeAPI();
+	private AplicacaoException aplicacaoException = new AplicacaoException();
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+		resp.setContentType("application/json");
+        try {
+			resp.getWriter().write(consome.coletaListaJSON());
+		} catch (IOException e) {
+			aplicacaoException.capturaExcecao(e);
+		}
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+		resp.setContentType("application/json");
+        try {
+			resp.getWriter().write(consome.coletaImagemJSON("0XYvRd7oD"));
+		} catch (IOException e) {
+			aplicacaoException.capturaExcecao(e);
+		}
+	}
+}

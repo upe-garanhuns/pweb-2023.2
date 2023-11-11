@@ -1,0 +1,8 @@
+package br.upe.garanhus.esw.pweb;
+
+public class ExceptionHandler {
+
+	public void handleException(Exception e) {
+		
+	}
+}

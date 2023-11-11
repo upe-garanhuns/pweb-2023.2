@@ -1,0 +1,22 @@
+
+Y
+java:S1165"!Make this "mensagem" field final.(ğ¢“ûÿÿÿÿ8î¥ü¸1H“RMINORZ
+CODE_SMELL
+X
+java:S1165" Make this "detalhe" field final.(«Œ³åşÿÿÿÿ8î¥ü¸1H”RMINORZ
+CODE_SMELL
+
+java:S1450"VRemove the "detalhe" field and declare it as a local variable in the relevant methods.(«Œ³åşÿÿÿÿ8î¥ü¸1H˜RMINORZ
+CODE_SMELL
+W
+java:S1165"Make this "codigo" field final.(•Íí²úÿÿÿÿ8î¥ü¸1H’RMINORZ
+CODE_SMELL
+–
+java:S1488+"cImmediately return this expression instead of assigning it to the temporary variable "jsonErroMsg".(»¢â´8îĞ©ü¸1H­RMINORZ
+CODE_SMELL
+
+java:S1450"URemove the "codigo" field and declare it as a local variable in the relevant methods.(•Íí²úÿÿÿÿ8î¥ü¸1H•RMINORZ
+CODE_SMELL
+]
+java:S1068"*Remove this unused "logger" private field.(úÑ±˜8œ³·ü¸1HÁRMAJORZ
+CODE_SMELL

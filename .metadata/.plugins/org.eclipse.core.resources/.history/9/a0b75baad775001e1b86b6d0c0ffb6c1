@@ -1,0 +1,8 @@
+public class AplicacaoException extends Throwable {
+
+	private static final long serialVersionUID = 1L;
+	
+	public void trataExcecao(Exception e) {
+		
+	}
+}
