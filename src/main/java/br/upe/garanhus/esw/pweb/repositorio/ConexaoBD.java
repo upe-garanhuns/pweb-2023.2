@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import br.upe.garanhus.esw.pweb.modelo.RickMortyException;
 
 public class ConexaoBD {
   
@@ -25,7 +26,7 @@ public class ConexaoBD {
       }
       
     } catch (SQLException | ClassNotFoundException e) {
-      e.printStackTrace();
+      throw new RickMortyException("Mensagem", e);
     }
   }
 

@@ -7,9 +7,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import br.upe.garanhus.esw.pweb.repositorio.EpisodioRepositorio;
 import br.upe.garanhus.esw.pweb.repositorio.PersonagemRepositorio;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -32,16 +34,18 @@ public final class RickMortyService {
 
   private final HttpClient cliente;
   private final PersonagemRepositorio personagemRepo;
+  private final EpisodioRepositorio episodioRepo;
 
   public RickMortyService() {
     this.cliente = HttpClient.newBuilder().proxy(ProxySelector.getDefault()).build();
     this.personagemRepo = new PersonagemRepositorio();
+    this.episodioRepo = new EpisodioRepositorio();
   }
 
   public List<PersonagemTO> listar() {
     List<PersonagemTO> personagens = null;
     HttpResponse<String> response = null;
-
+    
     try {
       final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character/?page=15")).GET().build();
       response = this.cliente.send(request, BodyHandlers.ofString());
@@ -55,8 +59,22 @@ public final class RickMortyService {
       RespostaListaPersonagensTO respostaAPI = jsonb.fromJson(response.body(), RespostaListaPersonagensTO.class);
       personagens = respostaAPI.getPersonagens();
       
-      salvarPersonagens(personagens);
-
+      ArrayList<Integer> identificadores = new ArrayList<>();
+      
+      respostaAPI.getPersonagens().forEach(personagem -> {
+        identificadores.add(personagem.getId());
+        salvarPersonagem(personagem);
+        
+        personagem.getEpisodios().forEach(episodio -> {
+          salvarEpisodio(episodio);
+          salvarPersonagemEp(personagem.getId(), episodio);
+        });
+      });
+      
+      personagens.clear();
+      
+      personagens = listarPersonagens(identificadores);
+      
     } catch (Exception e) {
       this.tratarErros(e);
     }
@@ -84,7 +102,18 @@ public final class RickMortyService {
 
       personagem = jsonb.fromJson(response.body(), PersonagemTO.class);
       logger.log(Level.INFO, response.body());
-
+      
+      salvarPersonagem(personagem);
+      
+      int idPersonagem = personagem.getId();
+      
+      personagem.getEpisodios().forEach(episodio -> {
+        salvarEpisodio(episodio);
+        salvarPersonagemEp(idPersonagem, episodio);
+      });
+      
+      personagem = personagemRepo.encontrarPersonagem(idPersonagem);
+      
     } catch (Exception e) {
       this.tratarErros(e);
     }
@@ -115,17 +144,42 @@ public final class RickMortyService {
     throw new RickMortyException(MSG_ERRO_INESPERADO);
   }
   
-  private void salvarPersonagens(List<PersonagemTO> personagens) {
-    personagens.forEach(personagem -> {
-      
-      String query1 = "SELECT * FROM personagens WHERE id = " + personagem.getId();
-      
-      if(personagemRepo.procurar(query1)) {
-        personagemRepo.atualizarPersonagem(personagem);
-      } else {
-        personagemRepo.inserirPersonagem(personagem);
-      }
-
-    });
+  private void salvarPersonagem(PersonagemTO personagem) { 
+    if(personagemRepo.encontrarPersonagem(personagem.getId()) != null) {
+      personagemRepo.atualizarPersonagem(personagem);
+    } else {
+      personagemRepo.inserirPersonagem(personagem);
+    }
   }
+  
+  private List<PersonagemTO> listarPersonagens(List<Integer> identificadores) {
+    ArrayList<PersonagemTO> personagens = new ArrayList<>();
+    
+    identificadores.forEach(id -> {
+      PersonagemTO personagem = personagemRepo.encontrarPersonagem(id);
+      
+      personagens.add(personagem);
+    });
+    
+    return personagens;  
+  }
+  
+  private void salvarEpisodio(String url) {
+
+    EpisodioTO episodio = episodioRepo.encontrarEpisodio(url);
+
+    if(episodio == null) {
+      episodioRepo.inserirEpisodio(url);
+    }
+      
+  }
+  
+  private void salvarPersonagemEp(int idPersonagem, String url) {
+    EpisodioTO episodio = episodioRepo.encontrarEpisodio(url);
+    
+    episodioRepo.inserirPersonagemEp(idPersonagem, episodio.getId());
+    
+  }
+
+  
 }
