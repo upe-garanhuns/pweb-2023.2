@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import br.upe.garanhus.esw.pweb.modelo.EpisodioTO;
@@ -20,7 +19,7 @@ public class EpisodioRepositorio {
   }
   
   public List<String> encontrarEpsPersonagem(int idPersonagem) {
-    String query = "SELECT DISTINCT ON (e.url) e.id, e.url FROM personagens p"
+    String queryString = "SELECT DISTINCT ON (e.url) e.id, e.url FROM personagens p"
         + " INNER JOIN personagens_episodios pe ON p.id = pe.id_personagem"
         + " INNER JOIN episodios e ON e.id = pe.id_episodio"
         + " WHERE p.id = (?)";
@@ -30,9 +29,8 @@ public class EpisodioRepositorio {
     ArrayList<String> listaEps = new ArrayList<>();
     
     try {
-      prepStmt = bd.prepareStatement(query);
+      prepStmt = bd.prepareStatement(queryString);
       prepStmt.setInt(1, idPersonagem);
-      
       resultado = prepStmt.executeQuery();
 
       while(resultado.next()) {
@@ -46,14 +44,15 @@ public class EpisodioRepositorio {
     }
     
     return listaEps;
-    
   }
   
   public void inserirEpisodio(String url) {   
-    String query = "INSERT INTO episodios(url) VALUES (?);";
+    String queryString = "INSERT INTO episodios(url) VALUES (?);";
+    
+    PreparedStatement prepStmt;
     
     try {
-      PreparedStatement prepStmt = bd.prepareStatement(query);
+      prepStmt = bd.prepareStatement(queryString);
       prepStmt.setString(1, url);
       prepStmt.executeUpdate();
       
@@ -66,15 +65,16 @@ public class EpisodioRepositorio {
   }
   
   public EpisodioTO encontrarEpisodio(String url) {
-    String queryString  = "SELECT * FROM episodios WHERE url = '" + url + "'";
+    String queryString  = "SELECT * FROM episodios WHERE url = (?);";
     
-    Statement statement;
+    PreparedStatement prepStmt;
     ResultSet resultado;
     EpisodioTO episodio = null;
       
     try {
-      statement = bd.createStatement();
-      resultado = statement.executeQuery(queryString);
+      prepStmt = bd.prepareStatement(queryString);
+      prepStmt.setString(1, url);
+      resultado = prepStmt.executeQuery();
 
       while(resultado.next()) {
         episodio = new EpisodioTO();
@@ -82,7 +82,7 @@ public class EpisodioRepositorio {
         episodio.setUrl(resultado.getString("url"));
       }
 
-      statement.close(); 
+      prepStmt.close(); 
       resultado.close();
      
     } catch (SQLException e) {
@@ -90,14 +90,16 @@ public class EpisodioRepositorio {
     }
     
     return episodio;
-    
   }
   
-  public void inserirPersonagemEp(int idPersonagem, int idEpisodio) {
-    String query = "INSERT INTO personagens_episodios(id_personagem, id_episodio) VALUES (?, ?);";
+  public void inserirEpPersonagem(int idPersonagem, int idEpisodio) {
+    String queryString = "INSERT INTO personagens_episodios(id_personagem, id_episodio) "
+        + "VALUES (?, ?);";
+    
+    PreparedStatement prepStmt;
     
     try {
-      PreparedStatement prepStmt = bd.prepareStatement(query);
+      prepStmt = bd.prepareStatement(queryString);
       prepStmt.setInt(1, idPersonagem);
       prepStmt.setInt(2, idEpisodio);
       prepStmt.executeUpdate();
@@ -107,6 +109,32 @@ public class EpisodioRepositorio {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+  
+  public boolean encontrarPersonagemEpPorId(int idPersonagem, int idEpisodio) {
+    String queryString  = "SELECT * FROM personagens_episodios WHERE id_personagem = (?) AND "
+        + "id_episodio = (?);";
+    
+    PreparedStatement prepStmt;
+    ResultSet resultSet;
+    boolean resultado = false;
+      
+    try {
+      prepStmt = bd.prepareStatement(queryString);
+      prepStmt.setInt(1, idPersonagem);
+      prepStmt.setInt(2, idEpisodio);
+      resultSet = prepStmt.executeQuery();
+      
+      resultado = resultSet.next();
+      
+      resultSet.close();
+      prepStmt.close();
+     
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    
+    return resultado;
   }
   
 }
