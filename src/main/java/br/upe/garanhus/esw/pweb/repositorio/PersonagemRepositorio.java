@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import br.upe.garanhus.esw.pweb.modelo.PersonagemTO;
 
@@ -21,10 +20,10 @@ public class PersonagemRepositorio {
   }
   
   public void inserirPersonagem(PersonagemTO personagem) {   
-    String query = "INSERT INTO personagens VALUES (?,?,?,?,?,?,?,?);";
+    final String queryString = "INSERT INTO personagens VALUES (?,?,?,?,?,?,?,?);";
     
     try {
-      PreparedStatement prepStmt = bd.prepareStatement(query);
+      PreparedStatement prepStmt = bd.prepareStatement(queryString);
       prepStmt.setInt(1, personagem.getId());
       prepStmt.setString(2, personagem.getNome());
       prepStmt.setString(3, personagem.getStatus());
@@ -44,11 +43,13 @@ public class PersonagemRepositorio {
   }
   
   public void atualizarPersonagem(PersonagemTO personagem) {
-    String query = "UPDATE personagens SET nome=?, status=?, especie=?, "
+    final String queryString = "UPDATE personagens SET nome=?, status=?, especie=?, "
         + "genero=?, imagem=?, criacao=?, atualizacao=? WHERE id=? ;";
     
+    PreparedStatement prepStmt;
+    
     try {
-      PreparedStatement prepStmt = bd.prepareStatement(query);
+      prepStmt = bd.prepareStatement(queryString);
       prepStmt.setString(1, personagem.getNome());
       prepStmt.setString(2, personagem.getStatus());
       prepStmt.setString(3, personagem.getEspecie());
@@ -68,15 +69,15 @@ public class PersonagemRepositorio {
   }
 
   public PersonagemTO encontrarPersonagem(int id) {
-    String queryString  = "SELECT * FROM personagens WHERE id = '" + id + "'";
+    final String queryString  = "SELECT * FROM personagens WHERE id = '" + id + "'";
     
-    Statement statement;
+    PreparedStatement prepStmt;
     ResultSet resultado;
     PersonagemTO personagem = null;
       
     try {
-      statement = bd.createStatement();
-      resultado = statement.executeQuery(queryString);
+      prepStmt = bd.prepareStatement(queryString);
+      resultado = prepStmt.executeQuery();
 
       while(resultado.next()) {
         personagem = new PersonagemTO();
@@ -90,8 +91,8 @@ public class PersonagemRepositorio {
         personagem.setEpisodios(episodioRepo.encontrarEpsPersonagem(id));
       }
 
-      statement.close(); 
       resultado.close();
+      prepStmt.close(); 
      
     } catch (SQLException e) {
       e.printStackTrace();

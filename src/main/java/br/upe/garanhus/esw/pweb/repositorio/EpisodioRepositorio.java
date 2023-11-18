@@ -19,7 +19,7 @@ public class EpisodioRepositorio {
   }
   
   public List<String> encontrarEpsPersonagem(int idPersonagem) {
-    String queryString = "SELECT DISTINCT ON (e.url) e.id, e.url FROM personagens p"
+    final String queryString = "SELECT DISTINCT ON (e.url) e.id, e.url FROM personagens p"
         + " INNER JOIN personagens_episodios pe ON p.id = pe.id_personagem"
         + " INNER JOIN episodios e ON e.id = pe.id_episodio"
         + " WHERE p.id = (?)";
@@ -47,7 +47,7 @@ public class EpisodioRepositorio {
   }
   
   public void inserirEpisodio(String url) {   
-    String queryString = "INSERT INTO episodios(url) VALUES (?);";
+    final String queryString = "INSERT INTO episodios(url) VALUES (?);";
     
     PreparedStatement prepStmt;
     
@@ -65,7 +65,7 @@ public class EpisodioRepositorio {
   }
   
   public EpisodioTO encontrarEpisodio(String url) {
-    String queryString  = "SELECT * FROM episodios WHERE url = (?);";
+    final String queryString  = "SELECT * FROM episodios WHERE url = (?);";
     
     PreparedStatement prepStmt;
     ResultSet resultado;
@@ -93,7 +93,7 @@ public class EpisodioRepositorio {
   }
   
   public void inserirEpPersonagem(int idPersonagem, int idEpisodio) {
-    String queryString = "INSERT INTO personagens_episodios(id_personagem, id_episodio) "
+    final String queryString = "INSERT INTO personagens_episodios(id_personagem, id_episodio) "
         + "VALUES (?, ?);";
     
     PreparedStatement prepStmt;
@@ -112,7 +112,7 @@ public class EpisodioRepositorio {
   }
   
   public boolean encontrarPersonagemEpPorId(int idPersonagem, int idEpisodio) {
-    String queryString  = "SELECT * FROM personagens_episodios WHERE id_personagem = (?) AND "
+    final String queryString  = "SELECT * FROM personagens_episodios WHERE id_personagem = (?) AND "
         + "id_episodio = (?);";
     
     PreparedStatement prepStmt;

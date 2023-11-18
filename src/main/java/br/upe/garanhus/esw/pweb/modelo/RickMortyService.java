@@ -138,7 +138,6 @@ public final class RickMortyService {
   }
   
   private void salvarEpisodio(String url) {
-
     EpisodioTO episodio = episodioRepo.encontrarEpisodio(url);
 
     if(episodio == null) {
