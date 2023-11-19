@@ -1,4 +1,6 @@
-br/upe/garanhus/esw/pweb/modelo/RickMortyService.class
-br/upe/garanhus/esw/pweb/modelo/RickMortyException.class
-br/upe/garanhus/esw/pweb/controle/Exec02Servlet.class
-br/upe/garanhus/esw/pweb/modelo/PersonagemTO.class
+br\upe\garanhus\esw\pweb\modelo\RickMortyService.class
+br\upe\garanhus\esw\pweb\controle\ErroTO.class
+br\upe\garanhus\esw\pweb\controle\Exec02Servlet.class
+br\upe\garanhus\esw\pweb\modelo\RickMortyException.class
+br\upe\garanhus\esw\pweb\modelo\PersonagemTO.class
+br\upe\garanhus\esw\pweb\modelo\RespostaListaPersonagensTO.class

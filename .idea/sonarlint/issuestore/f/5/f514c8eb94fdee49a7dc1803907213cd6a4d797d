@@ -1,0 +1,15 @@
+
+F
+java:S2629="$Invoke method(s) only conditionally.(ä™ÇŠúÿÿÿÿ8òĞºÌ¾1
+F
+java:S2629^"$Invoke method(s) only conditionally.(ä™ÇŠúÿÿÿÿ8óĞºÌ¾1
+S
+java:S2629œ"7Use the built-in formatting to construct this argument.(ÁÅ”àùÿÿÿÿ
+{
+java:S2142C"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(”ı¾8ÇÑºÌ¾1
+{
+java:S2142`"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(”ı¾8ÖÑºÌ¾1
+u
+java:S6201’"^Replace this instanceof check and cast with 'instanceof RickMortyException rickmortyexception'(É¯¤
+g
+java:S3457œ"KFormat specifiers or lambda should be used instead of string concatenation.(ÁÅ”àùÿÿÿÿ
