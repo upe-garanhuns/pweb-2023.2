@@ -7,9 +7,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import br.upe.garanhus.esw.pweb.repositorio.EpisodioRepositorio;
+import br.upe.garanhus.esw.pweb.repositorio.PersonagemRepositorio;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,17 +33,21 @@ public final class RickMortyService {
   private static final String MSG_ERRO_INESPERADO = "Não foi possível obter os dados da API Web: Rick and Morty";
 
   private final HttpClient cliente;
+  private final PersonagemRepositorio personagemRepo;
+  private final EpisodioRepositorio episodioRepo;
 
   public RickMortyService() {
     this.cliente = HttpClient.newBuilder().proxy(ProxySelector.getDefault()).build();
+    this.personagemRepo = new PersonagemRepositorio();
+    this.episodioRepo = new EpisodioRepositorio();
   }
 
   public List<PersonagemTO> listar() {
-    List<PersonagemTO> personagens = null;
+    ArrayList<PersonagemTO> personagens = new ArrayList<>();
     HttpResponse<String> response = null;
-
+    
     try {
-      final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character")).GET().build();
+      final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character/")).GET().build();
       response = this.cliente.send(request, BodyHandlers.ofString());
 
       if (HttpServletResponse.SC_OK != response.statusCode()) {
@@ -50,8 +57,12 @@ public final class RickMortyService {
       logger.log(Level.INFO, response.body());
 
       RespostaListaPersonagensTO respostaAPI = jsonb.fromJson(response.body(), RespostaListaPersonagensTO.class);
-      personagens = respostaAPI.getPersonagens();
-
+      
+      respostaAPI.getPersonagens().forEach(personagem -> {
+        salvarPersonagem(personagem);
+        personagens.add(personagemRepo.encontrarPersonagem(personagem.getId()));
+      });
+      
     } catch (Exception e) {
       this.tratarErros(e);
     }
@@ -79,7 +90,10 @@ public final class RickMortyService {
 
       personagem = jsonb.fromJson(response.body(), PersonagemTO.class);
       logger.log(Level.INFO, response.body());
-
+      
+      salvarPersonagem(personagem);      
+      personagem = personagemRepo.encontrarPersonagem(personagem.getId());
+      
     } catch (Exception e) {
       this.tratarErros(e);
     }
@@ -109,4 +123,35 @@ public final class RickMortyService {
     logger.log(Level.SEVERE, MSG_ERRO_INESPERADO + "Status Code" + statusCode);
     throw new RickMortyException(MSG_ERRO_INESPERADO);
   }
+  
+  private void salvarPersonagem(PersonagemTO personagem) { 
+    if(personagemRepo.encontrarPersonagem(personagem.getId()) != null) {
+      personagemRepo.atualizarPersonagem(personagem);
+    } else {
+      personagemRepo.inserirPersonagem(personagem);
+    }
+    
+    personagem.getEpisodios().forEach(episodio -> {
+      salvarEpisodio(episodio);
+      salvarPersonagemEp(personagem.getId(), episodio);
+    });
+  }
+  
+  private void salvarEpisodio(String url) {
+    EpisodioTO episodio = episodioRepo.encontrarEpisodio(url);
+
+    if(episodio == null) {
+      episodioRepo.inserirEpisodio(url);
+    }
+  }
+  
+  private void salvarPersonagemEp(int idPersonagem, String url) {
+    EpisodioTO episodio = episodioRepo.encontrarEpisodio(url);
+    boolean epExiste = episodioRepo.encontrarPersonagemEpPorId(idPersonagem, episodio.getId());
+    
+    if(!epExiste) {
+      episodioRepo.inserirEpPersonagem(idPersonagem, episodio.getId());
+    }
+  }
+  
 }

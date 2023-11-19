@@ -1,6 +1,7 @@
-/home/helaine/Development/workspace-ensino/aula-servlet/src/main/java/br/upe/garanhus/esw/pweb/modelo/RickMortyException.java
-/home/helaine/Development/workspace-ensino/aula-servlet/src/main/java/br/upe/garanhus/esw/pweb/modelo/PersonagemTO.java
-/home/helaine/Development/workspace-ensino/aula-servlet/src/main/java/br/upe/garanhus/esw/pweb/modelo/RickMortyService.java
-/home/helaine/Development/workspace-ensino/aula-servlet/src/main/java/br/upe/garanhus/esw/pweb/controle/Exec02Servlet.java
-/home/helaine/Development/workspace-ensino/aula-servlet/src/main/java/br/upe/garanhus/esw/pweb/controle/ErroTO.java
-/home/helaine/Development/workspace-ensino/aula-servlet/src/main/java/br/upe/garanhus/esw/pweb/modelo/RespostaListaPersonagensTO.java
+C:\Users\joaod\eclipse-workspace\pweb-2023.2\src\main\java\br\upe\garanhus\esw\pweb\modelo\RickMortyService.java
+C:\Users\joaod\eclipse-workspace\pweb-2023.2\src\main\java\br\upe\garanhus\esw\pweb\controle\ErroTO.java
+C:\Users\joaod\eclipse-workspace\pweb-2023.2\src\main\java\br\upe\garanhus\esw\pweb\controle\Exec02Servlet.java
+C:\Users\joaod\eclipse-workspace\pweb-2023.2\src\main\java\br\upe\garanhus\esw\pweb\repositorio\ConexaoBD.java
+C:\Users\joaod\eclipse-workspace\pweb-2023.2\src\main\java\br\upe\garanhus\esw\pweb\modelo\RickMortyException.java
+C:\Users\joaod\eclipse-workspace\pweb-2023.2\src\main\java\br\upe\garanhus\esw\pweb\modelo\PersonagemTO.java
+C:\Users\joaod\eclipse-workspace\pweb-2023.2\src\main\java\br\upe\garanhus\esw\pweb\modelo\RespostaListaPersonagensTO.java
