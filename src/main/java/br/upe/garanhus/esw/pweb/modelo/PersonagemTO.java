@@ -1,5 +1,6 @@
 package br.upe.garanhus.esw.pweb.modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.json.bind.annotation.JsonbProperty;
 
@@ -26,6 +27,10 @@ public class PersonagemTO {
 
   @JsonbProperty("created")
   private String criacao;
+
+  public PersonagemTO() {
+    episodios = new ArrayList<>(); // construtor adicionado
+  }
 
   public int getId() {
     return id;
@@ -81,6 +86,10 @@ public class PersonagemTO {
 
   public void setEpisodios(List<String> episodios) {
     this.episodios = episodios;
+  }
+
+  public void addEpisodio(String episodio) { // método adicionado
+    this.episodios.add(episodio);
   }
 
   public String getCriacao() {
