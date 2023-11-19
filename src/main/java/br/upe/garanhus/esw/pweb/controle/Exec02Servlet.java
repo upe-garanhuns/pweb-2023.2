@@ -2,12 +2,14 @@ package br.upe.garanhus.esw.pweb.controle;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import br.upe.garanhus.esw.pweb.modelo.PersonagemTO;
 import br.upe.garanhus.esw.pweb.modelo.RickMortyException;
 import br.upe.garanhus.esw.pweb.modelo.RickMortyService;
+import br.upe.garanhus.esw.pweb.repositorio.ConexaoBD;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -26,35 +28,51 @@ public class Exec02Servlet extends HttpServlet {
   private static final Logger logger = Logger.getLogger(Exec02Servlet.class.getName());
   private static final Jsonb jsonb = JsonbBuilder.create();
 
-  private static final String MSG_ERRO_INESPERADO = "Ocorreu um erro inesperado ao processar sua solicitação";
+  private static final String MSG_ERRO_INESPERADO =
+      "Ocorreu um erro inesperado ao processar sua solicitação";
 
-  private final RickMortyService rickMortyService = new RickMortyService();
+  private RickMortyService rickMortyService;
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public void init() {
+    Connection conexao = ConexaoBD.getConexao();
+    this.rickMortyService = new RickMortyService(conexao);
+  }
+
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
     try {
-      
-      List<PersonagemTO> personagens = rickMortyService.listar();
-      this.prepararResponseSucesso(request, response, jsonb.toJson(personagens));
-      
+
+      List<PersonagemTO> personagensApi = rickMortyService.listar();
+      List<PersonagemTO> personagensBD = rickMortyService.retornarTodosPersonagens(personagensApi);
+      this.prepararResponseSucesso(request, response, jsonb.toJson(personagensBD));
+
     } catch (RuntimeException e) {
       this.tratarErros(e, response);
     }
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
     try {
       final String id = request.getParameter("id");
 
-      final PersonagemTO personagem = rickMortyService.recuperar(id);
-      this.prepararResponseSucesso(request, response, jsonb.toJson(personagem));
+      final PersonagemTO personagemApi = rickMortyService.recuperar(id);
+      final PersonagemTO personagemBD = rickMortyService.retornarUnicoPersonagem(personagemApi, id);
+      this.prepararResponseSucesso(request, response, jsonb.toJson(personagemBD));
 
     } catch (RuntimeException e) {
       this.tratarErros(e, response);
     }
+  }
+
+  @Override
+  public void destroy() {
+    ConexaoBD.fecharConexao(this.rickMortyService.getConexao());
   }
 
   private void tratarErros(Exception e, HttpServletResponse response) {
@@ -74,10 +92,10 @@ public class Exec02Servlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
       throw new RickMortyException(MSG_ERRO_INESPERADO, e);
     }
-
   }
 
-  private void prepararResponseSucesso(HttpServletRequest request, HttpServletResponse response, String json) {
+  private void prepararResponseSucesso(
+      HttpServletRequest request, HttpServletResponse response, String json) {
     response.setContentType(APPLICATION_JSON);
     response.setCharacterEncoding(UTF_8);
     response.setStatus(HttpServletResponse.SC_OK);
@@ -92,6 +110,5 @@ public class Exec02Servlet extends HttpServlet {
     } catch (IOException e) {
       this.tratarErros(e, response);
     }
-
   }
 }
