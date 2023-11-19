@@ -7,9 +7,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import br.upe.garanhus.esw.pweb.modelo.repositorio.PersonagemRepository;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,8 +31,12 @@ public final class RickMortyService {
   private static final String MSG_ERRO_ID_NAO_INFORMADO =
       "É necessário informar o identificador do personagem para consumir a API Web Externa";
   private static final String MSG_ERRO_INESPERADO = "Não foi possível obter os dados da API Web: Rick and Morty";
+  private static final String MSG_ERRO_SQL= "Ocorreu um erro ao executar as consulta SQL";
+  private static final String MSG_ERRO_FAZER_CONEXAO = "Ocorreu um erro de conexão com o banco de dados";
+  private static final String MSG_ERRO_SQL_GERAL= "Ocorreu um erro inesperado ao utilizar o banco de dados";
 
   private final HttpClient cliente;
+  private PersonagemRepository personagemRepository;
 
   public RickMortyService() {
     this.cliente = HttpClient.newBuilder().proxy(ProxySelector.getDefault()).build();
@@ -37,7 +44,8 @@ public final class RickMortyService {
 
   public List<PersonagemTO> listar() {
     List<PersonagemTO> personagens = null;
-    HttpResponse<String> response = null;
+    HttpResponse<String> response;
+    personagemRepository = new PersonagemRepository();
 
     try {
       final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character")).GET().build();
@@ -52,6 +60,9 @@ public final class RickMortyService {
       RespostaListaPersonagensTO respostaAPI = jsonb.fromJson(response.body(), RespostaListaPersonagensTO.class);
       personagens = respostaAPI.getPersonagens();
 
+      personagemRepository.criarTabelas();
+      personagemRepository.salvarListaPersonagem(personagens);
+
     } catch (Exception e) {
       this.tratarErros(e);
     }
@@ -61,7 +72,7 @@ public final class RickMortyService {
 
   public PersonagemTO recuperar(String id) {
     PersonagemTO personagem = null;
-    HttpResponse<String> response = null;
+    personagemRepository = new PersonagemRepository();
 
     if (id == null || id.isEmpty()) {
       logger.log(Level.SEVERE, MSG_ERRO_ID_NAO_INFORMADO);
@@ -69,16 +80,8 @@ public final class RickMortyService {
     }
 
     try {
-      final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character/" + id)).GET().build();
-      response = cliente.send(request, BodyHandlers.ofString());
-
-      if (HttpServletResponse.SC_OK != response.statusCode()
-          && HttpServletResponse.SC_NOT_FOUND != response.statusCode()) {
-        this.tratarErroRetornoAPI(response.statusCode());
-      }
-
-      personagem = jsonb.fromJson(response.body(), PersonagemTO.class);
-      logger.log(Level.INFO, response.body());
+      personagemRepository.criarTabelas();
+      personagem = personagemRepository.recurarPersonagem(id);
 
     } catch (Exception e) {
       this.tratarErros(e);
@@ -95,6 +98,15 @@ public final class RickMortyService {
     if (e instanceof InterruptedException) {
       logger.log(Level.SEVERE, MSG_ERRO_CONSUMIR_DADOS, e);
       throw new RickMortyException(MSG_ERRO_CONSUMIR_DADOS);
+    } if (e instanceof SQLException) {
+      logger.log(Level.SEVERE, MSG_ERRO_SQL, e);
+      throw new RepositoryException(MSG_ERRO_SQL);
+    } if (e instanceof ClassNotFoundException) {
+      logger.log(Level.SEVERE, MSG_ERRO_FAZER_CONEXAO, e);
+      throw new RepositoryException(MSG_ERRO_FAZER_CONEXAO);
+    } if (e instanceof RepositoryException) {
+      logger.log(Level.SEVERE, MSG_ERRO_FAZER_CONEXAO, e);
+      throw new RepositoryException(MSG_ERRO_SQL_GERAL);
     } else {
       if (e instanceof RickMortyException) {
         throw (RickMortyException) e;
