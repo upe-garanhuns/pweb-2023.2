@@ -10,7 +10,6 @@ import br.upe.garanhus.esw.pweb.modelo.RickMortyException;
 import br.upe.garanhus.esw.pweb.modelo.RickMortyService;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,25 +25,26 @@ public class Exec02Servlet extends HttpServlet {
   private static final Logger logger = Logger.getLogger(Exec02Servlet.class.getName());
   private static final Jsonb jsonb = JsonbBuilder.create();
 
-  private static final String MSG_ERRO_INESPERADO = "Ocorreu um erro inesperado ao processar sua solicitação";
+  private static final String MSG_ERRO_INESPERADO =
+      "Ocorreu um erro inesperado ao processar sua solicitação";
 
   private final RickMortyService rickMortyService = new RickMortyService();
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
     try {
-      
+
       List<PersonagemTO> personagens = rickMortyService.listar();
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagens));
-      
-    } catch (RuntimeException e) {
+
+    } catch (Exception e) {
       this.tratarErros(e, response);
     }
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
     try {
       final String id = request.getParameter("id");
@@ -52,7 +52,7 @@ public class Exec02Servlet extends HttpServlet {
       final PersonagemTO personagem = rickMortyService.recuperar(id);
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagem));
 
-    } catch (RuntimeException e) {
+    } catch (Exception e) {
       this.tratarErros(e, response);
     }
   }
@@ -72,12 +72,13 @@ public class Exec02Servlet extends HttpServlet {
     } catch (IOException e1) {
       logger.log(Level.SEVERE, "Ocorreu um erro ao obter o writer", e);
       response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
-      throw new RickMortyException(MSG_ERRO_INESPERADO, e);
+      throw new RickMortyException(MSG_ERRO_INESPERADO, e); // quem vai pegar essa exceção?
     }
 
   }
 
-  private void prepararResponseSucesso(HttpServletRequest request, HttpServletResponse response, String json) {
+  private void prepararResponseSucesso(HttpServletRequest request, HttpServletResponse response,
+      String json) {
     response.setContentType(APPLICATION_JSON);
     response.setCharacterEncoding(UTF_8);
     response.setStatus(HttpServletResponse.SC_OK);

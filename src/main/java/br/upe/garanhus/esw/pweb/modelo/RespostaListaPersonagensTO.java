@@ -13,7 +13,8 @@ public class RespostaListaPersonagensTO {
 
   @JsonbProperty("info")
   public void setInfo(Map<String, String> info) {
-    this.quantidade = Integer.valueOf(info.get("count")).intValue();
+    this.quantidade = Integer.parseInt(info.get("count")); // mudança de .valueOf.intValue para
+                                                           // .parseInt
   }
 
   public List<PersonagemTO> getPersonagens() {

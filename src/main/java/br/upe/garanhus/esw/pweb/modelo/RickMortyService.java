@@ -10,6 +10,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import br.upe.garanhus.esw.pweb.modelo.repositorios.InsertUpdateRepository;
+import br.upe.garanhus.esw.pweb.modelo.repositorios.SelectRepository;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,13 +23,21 @@ public final class RickMortyService {
   private static final String URL_API = "https://rickandmortyapi.com/api/";
 
   private static final String MSG_ERRO_MONTAR_DADOS =
-      "Ocorreu um erro montar os dados da requisição para a API Web Externa";
+      "Ocorreu um erro ao montar os dados da requisição para a API Web Externa";
   private static final String MSG_ERRO_CONSUMIR_DADOS =
       "Ocorreu um erro ao executar o cliente HTTP para consumir a API Web Externa";
-  private static final String MSG_ERRO_GERAL = "Ocorreu um erro inesperado ao consumir a API Web Externa";
+  private static final String MSG_ERRO_INESPERADO =
+      "Ocorreu um erro inesperado ao consumir a API Web Externa"; // mudança de GERAL para
+                                                                  // INESPERADO
   private static final String MSG_ERRO_ID_NAO_INFORMADO =
       "É necessário informar o identificador do personagem para consumir a API Web Externa";
-  private static final String MSG_ERRO_INESPERADO = "Não foi possível obter os dados da API Web: Rick and Morty";
+  private static final String MSG_ERRO_GERAL =
+      "Não foi possível obter os dados da API Web: Rick and Morty"; // mudança de INESPERADO para
+                                                                    // GERAL
+
+  private InsertUpdateRepository insertRepository = new InsertUpdateRepository();
+  private SelectRepository selectRepository = new SelectRepository();
+
 
   private final HttpClient cliente;
 
@@ -40,7 +50,8 @@ public final class RickMortyService {
     HttpResponse<String> response = null;
 
     try {
-      final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character")).GET().build();
+      final HttpRequest request =
+          HttpRequest.newBuilder().uri(new URI(URL_API + "character")).GET().build();
       response = this.cliente.send(request, BodyHandlers.ofString());
 
       if (HttpServletResponse.SC_OK != response.statusCode()) {
@@ -49,13 +60,19 @@ public final class RickMortyService {
 
       logger.log(Level.INFO, response.body());
 
-      RespostaListaPersonagensTO respostaAPI = jsonb.fromJson(response.body(), RespostaListaPersonagensTO.class);
+      RespostaListaPersonagensTO respostaAPI =
+          jsonb.fromJson(response.body(), RespostaListaPersonagensTO.class);
       personagens = respostaAPI.getPersonagens();
+
+      insertRepository.adicionarPersonagens(personagens);
+
+      personagens.clear();
+      personagens = selectRepository.getPersonagens();
+
 
     } catch (Exception e) {
       this.tratarErros(e);
     }
-
     return personagens;
   }
 
@@ -69,7 +86,8 @@ public final class RickMortyService {
     }
 
     try {
-      final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character/" + id)).GET().build();
+      final HttpRequest request =
+          HttpRequest.newBuilder().uri(new URI(URL_API + "character/" + id)).GET().build();
       response = cliente.send(request, BodyHandlers.ofString());
 
       if (HttpServletResponse.SC_OK != response.statusCode()
@@ -78,6 +96,10 @@ public final class RickMortyService {
       }
 
       personagem = jsonb.fromJson(response.body(), PersonagemTO.class);
+      insertRepository.adicionarPersonagem(personagem);
+
+      personagem = null;
+      personagem = selectRepository.getPersonagenTOPeloId(Integer.parseInt(id));
       logger.log(Level.INFO, response.body());
 
     } catch (Exception e) {
