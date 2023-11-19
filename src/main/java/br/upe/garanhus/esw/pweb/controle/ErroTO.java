@@ -1,11 +1,13 @@
 package br.upe.garanhus.esw.pweb.controle;
 
 public class ErroTO {
+
   private String erro;
   private String codigo;
   private String detalhe;
 
-  public ErroTO() {}
+  public ErroTO() {
+  }
 
   public ErroTO(int codigo, Exception erro) {
     this();
@@ -37,6 +39,5 @@ public class ErroTO {
   public void setDetalhe(String detalhe) {
     this.detalhe = detalhe;
   }
-
 
 }
