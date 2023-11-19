@@ -1,22 +1,21 @@
 package br.upe.garanhus.esw.pweb.controle;
 
+import br.upe.garanhus.esw.pweb.modelo.PersonagemTO;
+import br.upe.garanhus.esw.pweb.modelo.RickMortyException;
+import br.upe.garanhus.esw.pweb.modelo.RickMortyService;
+import br.upe.garanhus.esw.pweb.modelo.infra.DatabaseConnection;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import br.upe.garanhus.esw.pweb.modelo.PersonagemTO;
-import br.upe.garanhus.esw.pweb.modelo.RickMortyException;
-import br.upe.garanhus.esw.pweb.modelo.RickMortyService;
-import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
-@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/processa-imagem", name = "processa-imagem")
 public class Exec02Servlet extends HttpServlet {
 
@@ -28,28 +27,27 @@ public class Exec02Servlet extends HttpServlet {
 
   private static final String MSG_ERRO_INESPERADO = "Ocorreu um erro inesperado ao processar sua solicitação";
 
-  private final RickMortyService rickMortyService = new RickMortyService();
+  private final transient RickMortyService rickMortyService = new RickMortyService();
+  private final transient DatabaseConnection databaseConnection = new DatabaseConnection();
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) {
     try {
-      
-      List<PersonagemTO> personagens = rickMortyService.listar();
+      List<PersonagemTO> personagens = rickMortyService.listarPersonagens();
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagens));
-      
+
     } catch (RuntimeException e) {
       this.tratarErros(e, response);
     }
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
     try {
       final String id = request.getParameter("id");
+      final PersonagemTO personagem = rickMortyService.recuperarPersonagem(Integer.parseInt(id));
 
-      final PersonagemTO personagem = rickMortyService.recuperar(id);
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagem));
 
     } catch (RuntimeException e) {
@@ -61,14 +59,13 @@ public class Exec02Servlet extends HttpServlet {
     PrintWriter out;
 
     try {
-
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       ErroTO erro = new ErroTO(HttpServletResponse.SC_BAD_REQUEST, e);
 
       out = response.getWriter();
       out.write(jsonb.toJson(erro));
       out.flush();
-
+      out.close();
     } catch (IOException e1) {
       logger.log(Level.SEVERE, "Ocorreu um erro ao obter o writer", e);
       response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
@@ -77,7 +74,8 @@ public class Exec02Servlet extends HttpServlet {
 
   }
 
-  private void prepararResponseSucesso(HttpServletRequest request, HttpServletResponse response, String json) {
+  private void prepararResponseSucesso(HttpServletRequest request, HttpServletResponse response,
+      String json) {
     response.setContentType(APPLICATION_JSON);
     response.setCharacterEncoding(UTF_8);
     response.setStatus(HttpServletResponse.SC_OK);
@@ -89,9 +87,15 @@ public class Exec02Servlet extends HttpServlet {
 
       out.print(json);
       out.flush();
+      out.close();
     } catch (IOException e) {
       this.tratarErros(e, response);
     }
+  }
 
+  @Override
+  public void destroy() {
+    this.databaseConnection.fecharConexao();
+    super.destroy();
   }
 }

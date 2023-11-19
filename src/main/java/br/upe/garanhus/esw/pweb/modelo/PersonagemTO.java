@@ -1,7 +1,7 @@
 package br.upe.garanhus.esw.pweb.modelo;
 
-import java.util.List;
 import jakarta.json.bind.annotation.JsonbProperty;
+import java.util.List;
 
 public class PersonagemTO {
 

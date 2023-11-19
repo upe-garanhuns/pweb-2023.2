@@ -1,8 +1,8 @@
 package br.upe.garanhus.esw.pweb.modelo;
 
+import jakarta.json.bind.annotation.JsonbProperty;
 import java.util.List;
 import java.util.Map;
-import jakarta.json.bind.annotation.JsonbProperty;
 
 public class RespostaListaPersonagensTO {
 
@@ -13,7 +13,7 @@ public class RespostaListaPersonagensTO {
 
   @JsonbProperty("info")
   public void setInfo(Map<String, String> info) {
-    this.quantidade = Integer.valueOf(info.get("count")).intValue();
+    this.quantidade = Integer.parseInt(info.get("count"));
   }
 
   public List<PersonagemTO> getPersonagens() {
@@ -31,7 +31,6 @@ public class RespostaListaPersonagensTO {
   public void setQuantidade(int quantidade) {
     this.quantidade = quantidade;
   }
-
 
 
 }
