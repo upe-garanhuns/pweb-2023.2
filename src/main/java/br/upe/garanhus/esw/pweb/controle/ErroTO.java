@@ -11,7 +11,7 @@ public class ErroTO {
     this();
     this.erro = erro.getMessage();
     this.codigo = String.valueOf(codigo);
-    this.detalhe = erro.getCause().toString();
+    this.detalhe = (erro.getCause() != null) ? erro.getCause().toString() : "Causa desconhecida.";
   }
 
   public String getErro() {

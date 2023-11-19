@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import br.upe.garanhus.esw.pweb.modelo.PersonagemNotFoundException;
 import br.upe.garanhus.esw.pweb.modelo.PersonagemTO;
 import br.upe.garanhus.esw.pweb.modelo.RickMortyException;
 import br.upe.garanhus.esw.pweb.modelo.RickMortyService;
@@ -39,6 +41,8 @@ public class Exec02Servlet extends HttpServlet {
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagens));
       
     } catch (RuntimeException e) {
+      response.setContentType(APPLICATION_JSON);
+      response.setCharacterEncoding(UTF_8);
       this.tratarErros(e, response);
     }
   }
@@ -53,17 +57,25 @@ public class Exec02Servlet extends HttpServlet {
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagem));
 
     } catch (RuntimeException e) {
+      response.setContentType(APPLICATION_JSON);
+      response.setCharacterEncoding(UTF_8);
       this.tratarErros(e, response);
     }
   }
+  
 
   private void tratarErros(Exception e, HttpServletResponse response) {
     PrintWriter out;
-
+    ErroTO erro;
     try {
-
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      ErroTO erro = new ErroTO(HttpServletResponse.SC_BAD_REQUEST, e);
+    	
+      if (e instanceof PersonagemNotFoundException) {
+    	  response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+          erro = new ErroTO(HttpServletResponse.SC_NOT_FOUND, e);
+      } else {
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+          erro = new ErroTO(HttpServletResponse.SC_BAD_REQUEST, e);
+      }
 
       out = response.getWriter();
       out.write(jsonb.toJson(erro));
@@ -72,6 +84,8 @@ public class Exec02Servlet extends HttpServlet {
     } catch (IOException e1) {
       logger.log(Level.SEVERE, "Ocorreu um erro ao obter o writer", e);
       response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+      response.setContentType(APPLICATION_JSON);
+      response.setCharacterEncoding(UTF_8);
       throw new RickMortyException(MSG_ERRO_INESPERADO, e);
     }
 
@@ -92,6 +106,5 @@ public class Exec02Servlet extends HttpServlet {
     } catch (IOException e) {
       this.tratarErros(e, response);
     }
-
   }
 }
