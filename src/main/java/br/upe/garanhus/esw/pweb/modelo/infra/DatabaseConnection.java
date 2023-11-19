@@ -9,7 +9,7 @@ public class DatabaseConnection {
 
   private static final String BD_URL = "jdbc:postgresql://localhost:5432/rickandmortyDB";
   private static final String USER = "postgres";
-  private static final String PASSWORD = "Abobrinha#432s";
+  private static final String PASSWORD = "postgres";
   private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
   private static final String MSG_ERRO_FALHA_CONEXAO =
       "Ocorreu algum erro durante a conexão com o banco";
