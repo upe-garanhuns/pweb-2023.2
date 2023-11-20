@@ -1,5 +1,6 @@
 package br.upe.garanhus.esw.pweb.modelo;
 
+import java.sql.Timestamp;
 import java.util.List;
 import jakarta.json.bind.annotation.JsonbProperty;
 
@@ -25,7 +26,7 @@ public class PersonagemTO {
   private List<String> episodios;
 
   @JsonbProperty("created")
-  private String criacao;
+  private Timestamp criacao;
 
   public int getId() {
     return id;
@@ -83,11 +84,11 @@ public class PersonagemTO {
     this.episodios = episodios;
   }
 
-  public String getCriacao() {
+  public Timestamp getCriacao() {
     return criacao;
   }
 
-  public void setCriacao(String criacao) {
+  public void setCriacao(Timestamp criacao) {
     this.criacao = criacao;
   }
 
