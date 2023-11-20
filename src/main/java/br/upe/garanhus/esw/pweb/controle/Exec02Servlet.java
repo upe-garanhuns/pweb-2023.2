@@ -2,6 +2,8 @@ package br.upe.garanhus.esw.pweb.controle;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +40,7 @@ public class Exec02Servlet extends HttpServlet {
       List<PersonagemTO> personagens = rickMortyService.listar();
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagens));
       
-    } catch (RuntimeException e) {
+    } catch (Exception e) {
       this.tratarErros(e, response);
     }
   }
@@ -52,7 +54,7 @@ public class Exec02Servlet extends HttpServlet {
       final PersonagemTO personagem = rickMortyService.recuperar(id);
       this.prepararResponseSucesso(request, response, jsonb.toJson(personagem));
 
-    } catch (RuntimeException e) {
+    } catch (Exception e) {
       this.tratarErros(e, response);
     }
   }
