@@ -27,6 +27,9 @@ public class PersonagemTO {
   @JsonbProperty("created")
   private String criacao;
 
+  public PersonagemTO(){
+  }
+
   public int getId() {
     return id;
   }

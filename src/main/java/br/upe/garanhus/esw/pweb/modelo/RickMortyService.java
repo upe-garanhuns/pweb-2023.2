@@ -7,9 +7,15 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import br.upe.garanhus.esw.pweb.repositorio.FabricaConexao;
+import br.upe.garanhus.esw.pweb.repositorio.PersonagemRepository;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,13 +37,17 @@ public final class RickMortyService {
 
   private final HttpClient cliente;
 
+  private PersonagemRepository personagemRepository = new PersonagemRepository();
+  Connection conexao = null;
+
   public RickMortyService() {
     this.cliente = HttpClient.newBuilder().proxy(ProxySelector.getDefault()).build();
   }
 
   public List<PersonagemTO> listar() {
-    List<PersonagemTO> personagens = null;
+    List<PersonagemTO> personagensBD = new ArrayList<>();
     HttpResponse<String> response = null;
+    Connection conexao = null;
 
     try {
       final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character")).GET().build();
@@ -50,18 +60,40 @@ public final class RickMortyService {
       logger.log(Level.INFO, response.body());
 
       RespostaListaPersonagensTO respostaAPI = jsonb.fromJson(response.body(), RespostaListaPersonagensTO.class);
-      personagens = respostaAPI.getPersonagens();
+      List<PersonagemTO> personagensAPI = respostaAPI.getPersonagens();
+
+      conexao = FabricaConexao.getConexao();
+
+      for (PersonagemTO p : personagensAPI) {
+        if (personagemRepository.verifyPersonagem(conexao, p)) {
+          personagemRepository.updatePersonagem(conexao, p);
+        } else {
+          personagemRepository.addPersonagem(conexao, p);
+        }
+
+        PersonagemTO pBD = personagemRepository.findPersonagem(conexao, p.getId());
+        personagensBD.add(pBD);
+      }
 
     } catch (Exception e) {
       this.tratarErros(e);
+    } finally {
+      if (conexao != null) {
+        try {
+          conexao.close();
+        } catch (SQLException e) {
+          this.tratarErros(e);
+        }
+      }
     }
 
-    return personagens;
+    return personagensBD;
   }
 
+
   public PersonagemTO recuperar(String id) {
-    PersonagemTO personagem = null;
-    HttpResponse<String> response = null;
+    PersonagemTO personagemBD = null;
+    Connection conexao = null;
 
     if (id == null || id.isEmpty()) {
       logger.log(Level.SEVERE, MSG_ERRO_ID_NAO_INFORMADO);
@@ -69,23 +101,45 @@ public final class RickMortyService {
     }
 
     try {
+      HttpClient cliente = HttpClient.newHttpClient();
+
       final HttpRequest request = HttpRequest.newBuilder().uri(new URI(URL_API + "character/" + id)).GET().build();
-      response = cliente.send(request, BodyHandlers.ofString());
+      HttpResponse<String> response = cliente.send(request, BodyHandlers.ofString());
 
       if (HttpServletResponse.SC_OK != response.statusCode()
-          && HttpServletResponse.SC_NOT_FOUND != response.statusCode()) {
+              && HttpServletResponse.SC_NOT_FOUND != response.statusCode()) {
         this.tratarErroRetornoAPI(response.statusCode());
       }
 
-      personagem = jsonb.fromJson(response.body(), PersonagemTO.class);
+      PersonagemTO personagemAPI = jsonb.fromJson(response.body(), PersonagemTO.class);
+
+      conexao = FabricaConexao.getConexao();
+
+      if (personagemRepository.verifyPersonagem(conexao, personagemAPI)) {
+        personagemRepository.updatePersonagem(conexao, personagemAPI);
+      } else {
+        personagemRepository.addPersonagem(conexao, personagemAPI);
+      }
+
+      personagemBD = personagemRepository.findPersonagem(conexao, personagemAPI.getId());
+
       logger.log(Level.INFO, response.body());
 
     } catch (Exception e) {
       this.tratarErros(e);
+    } finally {
+      if (conexao != null) {
+        try {
+          conexao.close();
+        } catch (SQLException e) {
+          this.tratarErros(e);
+        }
+      }
     }
 
-    return personagem;
+    return personagemBD;
   }
+
 
   private void tratarErros(Exception e) {
     if (e instanceof URISyntaxException) {
